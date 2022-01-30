@@ -114,13 +114,16 @@ def create_word_maps_bi(X, y, max_size=None):
         else :
             neg_output = [(k, m.split()[n + 1]) for m in neg_vocab_list for n, k in enumerate(m.split()) if n < len(m.split()) - 1]
 
-    pos_vocab = Counter(pos_output)
-    neg_vocab = Counter(neg_output)
+    pos_vocab_bi = Counter(pos_output)
+    neg_vocab_bi = Counter(neg_output)
 
     uni_pos_map, uni_neg_map = create_word_maps_uni(X, y, max_size = None)
 
-    pos_vocab.update(uni_pos_map)
-    neg_vocab.update(uni_neg_map)
+    pos_vocab = {**uni_pos_map, **pos_vocab_bi}
+    neg_vocab = {**uni_neg_map, **neg_vocab_bi}
+
+    # pos_vocab.update(uni_pos_map)
+    # neg_vocab.update(uni_neg_map)
     # pos_vocab = dict(pos_vocab) | uni_pos_map
     # neg_vocab = dict(neg_vocab) | uni_neg_map
 
