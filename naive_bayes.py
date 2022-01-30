@@ -119,10 +119,11 @@ def create_word_maps_bi(X, y, max_size=None):
 
     uni_pos_map, uni_neg_map = create_word_maps_uni(X, y, max_size = None)
 
-    pos_vocab = pos_vocab | uni_pos_map
-    neg_vocab = neg_vocab | uni_neg_map
+    pos_vocab = dict(pos_vocab) | uni_pos_map
+    neg_vocab = dict(neg_vocab) | uni_neg_map
 
     return dict(pos_vocab), dict(neg_vocab)
+
 
 # Keep this in the provided template
 def print_paramter_vals(laplace,pos_prior):
