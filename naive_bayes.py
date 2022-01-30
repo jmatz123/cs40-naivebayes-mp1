@@ -12,7 +12,7 @@ import re
 import itertools
 # from itertools import islice, izip
 from tqdm import tqdm
-from collections import Counter
+from collections import Counter, ChainMap
 import reader
  
 """
@@ -119,13 +119,16 @@ def create_word_maps_bi(X, y, max_size=None):
 
     uni_pos_map, uni_neg_map = create_word_maps_uni(X, y, max_size = None)
 
-    pos_vocab = {**uni_pos_map, **pos_vocab_bi}
-    neg_vocab = {**uni_neg_map, **neg_vocab_bi}
+    # pos_vocab = {**uni_pos_map, **pos_vocab_bi}
+    # neg_vocab = {**uni_neg_map, **neg_vocab_bi}
+
+    # pos_vocab = ChainMap(pos_vocab_bi, uni_pos_map)
+    # neg_vocab = ChainMap(neg_vocab_bi, uni_neg_map)
 
     # pos_vocab.update(uni_pos_map)
     # neg_vocab.update(uni_neg_map)
-    # pos_vocab = dict(pos_vocab) | uni_pos_map
-    # neg_vocab = dict(neg_vocab) | uni_neg_map
+    pos_vocab = dict(pos_vocab_bi) | uni_pos_map
+    neg_vocab = dict(neg_vocab_bi) | uni_neg_map
 
     return dict(pos_vocab), dict(neg_vocab)
 
