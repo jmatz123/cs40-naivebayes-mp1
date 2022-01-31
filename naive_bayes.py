@@ -301,6 +301,12 @@ def bigramBayes(train_set, train_labels, dev_set, unigram_laplace=0.001, bigram_
     bi_pos_word_probs, bi_no_word_pos = bi_probability_calculation(bi_positives, uni_positives, bigram_laplace)
     bi_neg_word_probs, bi_no_word_neg = bi_probability_calculation(bi_negatives, uni_negatives, bigram_laplace)
 
+    # just bigram map
+    # for email in dev_set :
+    #     for key in email :
+    #         if space in key :
+
+
     for email in dev_set : 
         uni_positive_prob = 0
         uni_negative_prob = 0
@@ -312,9 +318,14 @@ def bigramBayes(train_set, train_labels, dev_set, unigram_laplace=0.001, bigram_
         negative_prob = 0
 
         # bigram probs
-        for bigram in email : 
-            if space in bigram : 
-                break
+        # for bigram in email :
+        for i in range(len(email) - 1) : 
+            # if space in bigram : 
+            #     break
+
+            bigram = email[i] + space + email[i + 1]
+
+            # print(bigram)
 
             if bigram in bi_pos_word_probs :
                 bi_positive_prob += np.log(bi_pos_word_probs[bigram])
@@ -337,10 +348,10 @@ def bigramBayes(train_set, train_labels, dev_set, unigram_laplace=0.001, bigram_
             else :
                 uni_negative_prob += np.log(uni_no_word_neg)
         
-        positive_prob = ((-1 * uni_positive_prob) ** unigram_lambda) * ((-1 * bi_positive_prob) ** bigram_lambda)
+        positive_prob = ((-1 * uni_positive_prob) * unigram_lambda) + ((-1 * bi_positive_prob) * bigram_lambda)
         positive_prob += pos_prior
 
-        negative_prob = ((-1 * uni_negative_prob) ** unigram_lambda) * ((-1 * bi_negative_prob) ** bigram_lambda)
+        negative_prob = ((-1 * uni_negative_prob) * unigram_lambda) + ((-1 * bi_negative_prob) * bigram_lambda)
         negative_prob += neg_prior
 
         if (negative_prob < positive_prob) :
