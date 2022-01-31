@@ -221,7 +221,7 @@ def uni_probability_calculation(word_count_map, laplace) :
     total_word_count= 0
 
     for word in word_count_map :
-        total_word_count+= word_count_map[word]
+        total_word_count += word_count_map[word]
 
     for word in word_count_map : 
         numerator = word_count_map[word] + laplace
@@ -252,7 +252,7 @@ def bi_probability_calculation(bigram_word_count_map, unigram_word_count_map, la
         
         probabilities[bigram] = probability
     
-    no_word_prob = (laplace) / (total_bigram_count + (laplace * (1 + len(bigram_word_count_map))))
+    no_word_prob = (laplace) / (total_bigram_count + total_unigram_count + (laplace * (1 + len(bigram_word_count_map) + len(unigram_word_count_map))))
 
     return probabilities, no_word_prob
 
@@ -291,6 +291,7 @@ def bigramBayes(train_set, train_labels, dev_set, unigram_laplace=0.001, bigram_
     unigram_lambda = 1 - bigram_lambda
     space = " "
 
+    # unigram and bigram maps
     uni_positives, uni_negatives = create_word_maps_uni(train_set, train_labels, max_size=None)
     bi_positives, bi_negatives = create_word_maps_bi(train_set, train_labels, max_size=None)
 
