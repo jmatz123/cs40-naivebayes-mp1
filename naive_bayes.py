@@ -313,10 +313,10 @@ def bigramBayes(train_set, train_labels, dev_set, unigram_laplace=0.001, bigram_
             else :
                 uni_negative_prob += np.log(uni_no_word_neg)
         
-        positive_prob = ((-1 * uni_positive_prob) ** unigram_lambda) * ((-1 * bi_positive_prob) ** bigram_lambda)
+        positive_prob = ((-1 * uni_positive_prob) * unigram_lambda) + ((-1 * bi_positive_prob) * bigram_lambda)
         positive_prob += pos_prior
 
-        negative_prob = ((-1 * uni_negative_prob) ** unigram_lambda) * ((-1 * bi_negative_prob) ** bigram_lambda)
+        negative_prob = ((-1 * uni_negative_prob) * unigram_lambda) + ((-1 * bi_negative_prob) * bigram_lambda)
         negative_prob += neg_prior
 
         if (negative_prob < positive_prob) :
