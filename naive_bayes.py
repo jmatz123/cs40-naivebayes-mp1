@@ -10,6 +10,7 @@ import numpy as np
 import math
 import re
 import itertools
+from nltk.util import ngrams
 # from itertools import islice, izip
 from tqdm import tqdm
 from collections import Counter, ChainMap
@@ -94,41 +95,59 @@ def create_word_maps_bi(X, y, max_size=None):
         keys: words
         values: number of times the word pair appears
     """
-    #print(len(X),'X')
-    pos_vocab = {}
-    neg_vocab = {}
-    pos_vocab_list = []
-    neg_vocab_list = []
-    ##TODO:
-#    raise RuntimeError("Replace this line with your code!")
-    for i in range(len(X)) :
-        for word in X[i] :
-            if (y[i] == 1) :
-                pos_vocab_list.append(word)
-                
-            else :
-                neg_vocab_list.append(word)
+    pos_vocab = Counter()
+    neg_vocab = Counter()
+    space = ' '
 
-        if (y[i] == 1) :
-            pos_output = [(k, m.split()[n + 1]) for m in pos_vocab_list for n, k in enumerate(m.split()) if n < len(m.split()) - 1]
+    for i, email in enumerate(X) :
+        if y[i] == 1 :
+            positive = Counter(email)
+            vals = ngrams(email, 2)
+            bi_pos_map = Counter([space.join(val) for val in vals])
+            pos_vocab += positive + bi_pos_map
+        
         else :
-            neg_output = [(k, m.split()[n + 1]) for m in neg_vocab_list for n, k in enumerate(m.split()) if n < len(m.split()) - 1]
+            negative = Counter(email)
+            vals = ngrams(email, 2)
+            bi_neg_map = Counter([space.join(val) for val in vals])
+            neg_vocab += negative + bi_neg_map
 
-    pos_vocab_bi = Counter(pos_output)
-    neg_vocab_bi = Counter(neg_output)
 
-    uni_pos_map, uni_neg_map = create_word_maps_uni(X, y, max_size = None)
+    #print(len(X),'X')
+#     pos_vocab = {}
+#     neg_vocab = {}
+#     pos_vocab_list = []
+#     neg_vocab_list = []
+#     ##TODO:
+# #    raise RuntimeError("Replace this line with your code!")
+#     for i in range(len(X)) :
+#         for word in X[i] :
+#             if (y[i] == 1) :
+#                 pos_vocab_list.append(word)
+                
+#             else :
+#                 neg_vocab_list.append(word)
 
-    # pos_vocab = {**uni_pos_map, **pos_vocab_bi}
-    # neg_vocab = {**uni_neg_map, **neg_vocab_bi}
+#         if (y[i] == 1) :
+#             pos_output = [(k, m.split()[n + 1]) for m in pos_vocab_list for n, k in enumerate(m.split()) if n < len(m.split()) - 1]
+#         else :
+#             neg_output = [(k, m.split()[n + 1]) for m in neg_vocab_list for n, k in enumerate(m.split()) if n < len(m.split()) - 1]
 
-    # pos_vocab = ChainMap(pos_vocab_bi, uni_pos_map)
-    # neg_vocab = ChainMap(neg_vocab_bi, uni_neg_map)
+#     pos_vocab_bi = Counter(pos_output)
+#     neg_vocab_bi = Counter(neg_output)
 
-    # pos_vocab.update(uni_pos_map)
-    # neg_vocab.update(uni_neg_map)
-    pos_vocab = dict(pos_vocab_bi) | uni_pos_map
-    neg_vocab = dict(neg_vocab_bi) | uni_neg_map
+#     uni_pos_map, uni_neg_map = create_word_maps_uni(X, y, max_size = None)
+
+#     # pos_vocab = {**uni_pos_map, **pos_vocab_bi}
+#     # neg_vocab = {**uni_neg_map, **neg_vocab_bi}
+
+#     # pos_vocab = ChainMap(pos_vocab_bi, uni_pos_map)
+#     # neg_vocab = ChainMap(neg_vocab_bi, uni_neg_map)
+
+#     # pos_vocab.update(uni_pos_map)
+#     # neg_vocab.update(uni_neg_map)
+#     pos_vocab = dict(pos_vocab_bi) | uni_pos_map
+#     neg_vocab = dict(neg_vocab_bi) | uni_neg_map
 
     return dict(pos_vocab), dict(neg_vocab)
 
