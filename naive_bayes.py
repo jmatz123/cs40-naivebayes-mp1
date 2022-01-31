@@ -100,17 +100,21 @@ def create_word_maps_bi(X, y, max_size=None):
     space = ' '
 
     for i, email in enumerate(X) :
-        if y[i] == 1 :
-            positive = Counter(email)
-            vals = ngrams(email, 2)
-            bi_pos_map = Counter([space.join(val) for val in vals])
-            pos_vocab += positive + bi_pos_map
-        
-        else :
+        if y[i] == 0 :
             negative = Counter(email)
             vals = ngrams(email, 2)
             bi_neg_map = Counter([space.join(val) for val in vals])
+            # neg_vocab.append(negative)
+            # neg_vocab.append(bi_neg_map)
             neg_vocab += negative + bi_neg_map
+        
+        else :
+            positive = Counter(email)
+            vals = ngrams(email, 2)
+            bi_pos_map = Counter([space.join(val) for val in vals])
+            # pos_vocab.append(positive)
+            # pos_vocab.append(bi_pos_map)
+            pos_vocab += positive + bi_pos_map
 
 
     #print(len(X),'X')
@@ -332,10 +336,10 @@ def bigramBayes(train_set, train_labels, dev_set, unigram_laplace=0.001, bigram_
             else :
                 uni_negative_prob += np.log(uni_no_word_neg)
         
-        positive_prob = ((-1 * uni_positive_prob) * unigram_lambda) + ((-1 * bi_positive_prob) * bigram_lambda)
+        positive_prob = ((-1 * uni_positive_prob) ** unigram_lambda) * ((-1 * bi_positive_prob) ** bigram_lambda)
         positive_prob += pos_prior
 
-        negative_prob = ((-1 * uni_negative_prob) * unigram_lambda) + ((-1 * bi_negative_prob) * bigram_lambda)
+        negative_prob = ((-1 * uni_negative_prob) ** unigram_lambda) * ((-1 * bi_negative_prob) ** bigram_lambda)
         negative_prob += neg_prior
 
         if (negative_prob < positive_prob) :
